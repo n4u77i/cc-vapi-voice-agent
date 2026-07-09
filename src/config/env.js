@@ -13,6 +13,7 @@ function required(name) {
 const env = {
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: Number(process.env.PORT || 3000),
+  HOST: process.env.HOST || "0.0.0.0",
   DATABASE_URL: required("DATABASE_URL"),
   VAPI_WEBHOOK_SECRET: required("VAPI_WEBHOOK_SECRET"),
   ADMIN_API_KEY: required("ADMIN_API_KEY"),

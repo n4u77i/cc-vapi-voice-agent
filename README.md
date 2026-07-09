@@ -36,6 +36,7 @@ Copy `.env.example` to `.env` and fill values locally.
 ```env
 NODE_ENV=development
 PORT=3000
+HOST=0.0.0.0
 DATABASE_URL=postgresql://carecloud_user:carecloud_password@localhost:5432/carecloud_voice_agent?schema=public
 VAPI_WEBHOOK_SECRET=your-local-vapi-secret
 ADMIN_API_KEY=your-local-admin-key
@@ -50,6 +51,7 @@ Railway variables:
 ```env
 NODE_ENV=production
 DATABASE_URL=<provided by Railway PostgreSQL>
+HOST=0.0.0.0
 VAPI_WEBHOOK_SECRET=<same value configured in Vapi>
 ADMIN_API_KEY=<strong random key>
 CORS_ORIGIN=*

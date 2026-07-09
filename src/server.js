@@ -3,10 +3,11 @@ const { env } = require("./config/env");
 const { logger } = require("./config/logger");
 const { prisma } = require("./db/prisma");
 
-const server = app.listen(env.PORT, () => {
+const server = app.listen(env.PORT, env.HOST, () => {
   logger.info(
     {
       port: env.PORT,
+      host: env.HOST,
       env: env.NODE_ENV,
       service: env.SERVICE_NAME,
       version: env.SERVICE_VERSION
