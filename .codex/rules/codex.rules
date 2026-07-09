@@ -1,0 +1,41 @@
+# .codex/rules/filesystem-and-system.rules
+
+- pattern: "mkdir *"
+  decision: "allow"
+  justification: "Creating directories inside the designated workspace is permitted."
+
+- pattern: "touch *"
+  decision: "allow"
+  justification: "Creating files inside the designated workspace is permitted."
+
+- pattern: "rm -rf /"
+  decision: "forbidden"
+  justification: "Destructive root-level file deletion is strictly prohibited."
+
+- pattern: "npm install -g *"
+  decision: "prompt"
+  justification: "Installing global Node.js packages alters the host system and requires human approval."
+
+- pattern: "npm uninstall -g *"
+  decision: "prompt"
+  justification: "Removing global Node.js packages alters the host system and requires human approval."
+
+- pattern: "apt-get install *"
+  decision: "prompt"
+  justification: "Installing Ubuntu system packages requires explicit sudo/admin permission."
+
+- pattern: "apt install *"
+  decision: "prompt"
+  justification: "Installing Ubuntu system packages requires explicit sudo/admin permission."
+
+- pattern: "apt-get remove *"
+  decision: "prompt"
+  justification: "Removing Ubuntu system packages requires explicit sudo/admin permission."
+
+- pattern: "apt remove *"
+  decision: "prompt"
+  justification: "Removing Ubuntu system packages requires explicit sudo/admin permission."
+
+- pattern: "sudo *"
+  decision: "prompt"
+  justification: "Any command requiring superuser privileges must be explicitly authorized."

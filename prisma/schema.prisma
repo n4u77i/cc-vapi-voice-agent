@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CallStatus {
+  STARTED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  UNKNOWN
+}
+
+enum IntakeReason {
+  APPOINTMENT
+  BILLING
+  PRESCRIPTION
+  GENERAL
+  OTHER
+}
+
+model Call {
+  id           String          @id @default(uuid())
+  vapiCallId   String?         @unique
+  callerNumber String?
+  status       CallStatus      @default(UNKNOWN)
+  startedAt    DateTime?
+  endedAt      DateTime?
+  transcript   String?
+  summary      String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  intakes      PatientIntake[]
+  events       WebhookEvent[]
+
+  @@index([vapiCallId])
+  @@index([createdAt])
+}
+
+model PatientIntake {
+  id                    String       @id @default(uuid())
+  callId                String?
+  call                  Call?        @relation(fields: [callId], references: [id])
+  fullName              String
+  dateOfBirth           String?
+  phone                 String?
+  reason                IntakeReason @default(OTHER)
+  reasonDescription     String?
+  preferredCallbackTime String?
+  consent               Boolean      @default(false)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  @@index([callId])
+  @@index([createdAt])
+}
+
+model WebhookEvent {
+  id         String   @id @default(uuid())
+  callId     String?
+  call       Call?    @relation(fields: [callId], references: [id])
+  vapiCallId String?
+  eventType  String
+  payload    Json
+  createdAt  DateTime @default(now())
+
+  @@index([vapiCallId])
+  @@index([eventType])
+  @@index([createdAt])
+}

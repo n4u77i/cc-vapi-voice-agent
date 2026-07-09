@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: carecloud-postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: carecloud_voice_agent
+      POSTGRES_USER: carecloud_user
+      POSTGRES_PASSWORD: carecloud_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - carecloud_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carecloud_user -d carecloud_voice_agent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  carecloud_postgres_data:

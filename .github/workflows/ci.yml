@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: carecloud_voice_agent
+          POSTGRES_USER: carecloud_user
+          POSTGRES_PASSWORD: carecloud_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U carecloud_user -d carecloud_voice_agent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://carecloud_user:carecloud_password@localhost:5432/carecloud_voice_agent?schema=public
+      VAPI_WEBHOOK_SECRET: test-secret
+      ADMIN_API_KEY: test-admin-key
+      NODE_ENV: test
+      LOG_LEVEL: silent
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+
+      - name: Run tests
+        run: npm test
